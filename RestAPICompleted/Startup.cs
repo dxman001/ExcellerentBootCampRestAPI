@@ -10,11 +10,16 @@ using RestAPICompleted.Services;
 using Microsoft.EntityFrameworkCore;
 using RestAPICompleted.Repository;
 using RestAPICompleted.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using RestAPICompleted.Helper;
 
 namespace RestAPICompleted
 {
     public class Startup
     {
+        private const string SECRETKEY = "TQvgjeABMPOwCycOqah5EQu5yyVjpmVGTQvgjeABMPOwCycOqah5Equ5yyVjpmVGTQvgjeABMPOwCycOqah5EQu5yyVjpmVG";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -34,6 +39,27 @@ namespace RestAPICompleted
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Boot Camp Members APi", Version = "v1" });
             });
+
+          
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = "JwtBearer";
+                option.DefaultChallengeScheme = "JwtBearer";
+            })
+            .AddJwtBearer("JwtBearer", jwtOptions =>
+                {
+                    jwtOptions.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SECRETKEY)),
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidIssuer = "https://localhost:44303",
+                        ValidAudience = "https://localhost:44303",
+                        ValidateLifetime = true
+
+                    };
+                });
+            services.AddSingleton<IJwtAuth>(new Auth(SECRETKEY));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +74,7 @@ namespace RestAPICompleted
             
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

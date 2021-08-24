@@ -10,5 +10,6 @@ namespace RestAPICompleted.Interfaces
         ResponseDto<Member> Add(Member member);
         ResponseDto<Member> Update(Member member);
         ResponseDto<Member> Remove(int id);
+        Member AuthenticateUser(string username, string password);
     }
 }

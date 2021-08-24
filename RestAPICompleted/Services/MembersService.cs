@@ -21,14 +21,31 @@ namespace RestAPICompleted.Services
                             Id=1,
                             FullName="Ashenafi Fiseha",
                             Role="Developer",
-                            Grade="Dev III"
+                            Grade="Dev III",
+                            Username="ashu001",
+                            Password="1234",
+                            Email="ashu@excellerent.com"
                         },
                         new Member
                         {
                             Id=2,
                             FullName="Kaftamu Kagnewe",
                             Role="Team Leader",
-                            Grade="Seniour Dev I"
+                            Grade="Seniour Dev I",
+                             Username="kaftu001",
+                            Password="4321",
+                            Email="Kaftamu@excellerent.com"
+                        }
+                        ,
+                        new Member
+                        {
+                            Id=2,
+                            FullName="Dagnachew Tsegaye",
+                            Role="Tech Lead",
+                            Grade="Seniour Dev III",
+                            Username="dagnu001",
+                            Password="1234",
+                            Email="Dagnachew@excellerent.com"
                         }
                     }
                 );
@@ -62,6 +79,10 @@ namespace RestAPICompleted.Services
             if (toBeDeleted == null) return new ResponseDto<Member>(null, "Unable to find the member requested to be deleted");
             _members.Remove(toBeDeleted);
             return new ResponseDto<Member>(true,"Member Removed Successfully");
+        }
+        public Member AuthenticateUser(string username,string password)
+        {
+            return _members.Where(x => x.Username.ToLower().Equals(username) && x.Password.Equals(password))?.FirstOrDefault() ?? null;
         }
     }
 }
